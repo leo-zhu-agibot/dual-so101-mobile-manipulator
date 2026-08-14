@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="position_joint" params="name initial=0.0">
+    <joint name="${name}">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">${initial}</param></state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="dual_so101_control" params="use_mock_hardware:=true">
+    <ros2_control name="DualSO101MobileSystem" type="system">
+      <hardware>
+        <xacro:if value="${use_mock_hardware}"><plugin>mock_components/GenericSystem</plugin></xacro:if>
+        <xacro:unless value="${use_mock_hardware}"><plugin>topic_based_ros2_control/TopicBasedSystem</plugin></xacro:unless>
+      </hardware>
+      <joint name="left_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+      <joint name="right_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+      <xacro:position_joint name="left_shoulder_pan"/><xacro:position_joint name="left_shoulder_lift"/>
+      <xacro:position_joint name="left_elbow_flex"/><xacro:position_joint name="left_wrist_flex"/>
+      <xacro:position_joint name="left_wrist_roll"/><xacro:position_joint name="left_gripper"/>
+      <xacro:position_joint name="right_shoulder_pan"/><xacro:position_joint name="right_shoulder_lift"/>
+      <xacro:position_joint name="right_elbow_flex"/><xacro:position_joint name="right_wrist_flex"/>
+      <xacro:position_joint name="right_wrist_roll"/><xacro:position_joint name="right_gripper"/>
+    </ros2_control>
+  </xacro:macro>
+</robot>
+

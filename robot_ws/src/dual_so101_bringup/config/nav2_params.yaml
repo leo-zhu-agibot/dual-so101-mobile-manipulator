@@ -1,0 +1,92 @@
+amcl:
+  ros__parameters:
+    use_sim_time: true
+    base_frame_id: base_footprint
+    odom_frame_id: odom
+    global_frame_id: map
+    scan_topic: /scan
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: true
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /mobile_base_controller/odom
+
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    controller_frequency: 20.0
+    controller_plugins: [FollowPath]
+    progress_checker_plugins: [progress_checker]
+    goal_checker_plugins: [goal_checker]
+    progress_checker:
+      plugin: nav2_controller::SimpleProgressChecker
+      required_movement_radius: 0.25
+      movement_time_allowance: 10.0
+    goal_checker:
+      plugin: nav2_controller::SimpleGoalChecker
+      xy_goal_tolerance: 0.20
+      yaw_goal_tolerance: 0.20
+      stateful: true
+    FollowPath:
+      plugin: dwb_core::DWBLocalPlanner
+      min_vel_x: 0.0
+      max_vel_x: 0.60
+      max_vel_theta: 1.20
+      acc_lim_x: 1.0
+      acc_lim_theta: 2.5
+
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    planner_plugins: [GridBased]
+    GridBased:
+      plugin: nav2_navfn_planner/NavfnPlanner
+      tolerance: 0.30
+      use_astar: true
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: odom
+      robot_base_frame: base_link
+      rolling_window: true
+      width: 4
+      height: 4
+      resolution: 0.05
+      robot_radius: 0.39
+      plugins: [voxel_layer, inflation_layer]
+      voxel_layer:
+        plugin: nav2_costmap_2d::VoxelLayer
+        observation_sources: scan depth
+        scan: {topic: /scan, data_type: LaserScan, clearing: true, marking: true}
+        depth: {topic: /head_rgbd/depth/color/points, data_type: PointCloud2, clearing: true, marking: true, min_obstacle_height: 0.05, max_obstacle_height: 1.8}
+      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, inflation_radius: 0.55, cost_scaling_factor: 3.0}
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: map
+      robot_base_frame: base_link
+      resolution: 0.05
+      robot_radius: 0.39
+      track_unknown_space: true
+      plugins: [static_layer, obstacle_layer, inflation_layer]
+      static_layer: {plugin: nav2_costmap_2d::StaticLayer, map_subscribe_transient_local: true}
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        observation_sources: scan
+        scan: {topic: /scan, data_type: LaserScan, clearing: true, marking: true}
+      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, inflation_radius: 0.55, cost_scaling_factor: 3.0}
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: true
+    local_frame: odom
+    global_frame: map
+    robot_base_frame: base_link
+    cycle_frequency: 10.0
+

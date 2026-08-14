@@ -1,0 +1,20 @@
+isaac_sim_version: ">=4.5,<6"
+extensions:
+  - isaacsim.asset.importer.urdf
+  - isaacsim.ros2.bridge
+clock: /clock
+frames:
+  map: map
+  odom: odom
+  base: base_link
+publishers:
+  - {topic: /joint_states, type: sensor_msgs/msg/JointState, rate_hz: 50}
+  - {topic: /scan, type: sensor_msgs/msg/LaserScan, rate_hz: 10}
+  - {topic: /head_rgbd/color/image_raw, type: sensor_msgs/msg/Image, rate_hz: 30}
+  - {topic: /head_rgbd/depth/image_rect_raw, type: sensor_msgs/msg/Image, rate_hz: 30}
+  - {topic: /imu/data, type: sensor_msgs/msg/Imu, rate_hz: 100}
+subscribers:
+  - {topic: /cmd_vel, type: geometry_msgs/msg/Twist}
+  - {topic: /left_arm_controller/joint_trajectory, type: trajectory_msgs/msg/JointTrajectory}
+  - {topic: /right_arm_controller/joint_trajectory, type: trajectory_msgs/msg/JointTrajectory}
+

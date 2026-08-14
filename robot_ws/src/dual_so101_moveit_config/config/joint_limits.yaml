@@ -1,0 +1,12 @@
+joint_limits:
+  left_shoulder_pan: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  left_shoulder_lift: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  left_elbow_flex: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  left_wrist_flex: {has_velocity_limits: true, max_velocity: 2.0, has_acceleration_limits: true, max_acceleration: 4.0}
+  left_wrist_roll: {has_velocity_limits: true, max_velocity: 2.0, has_acceleration_limits: true, max_acceleration: 4.0}
+  right_shoulder_pan: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  right_shoulder_lift: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  right_elbow_flex: {has_velocity_limits: true, max_velocity: 1.5, has_acceleration_limits: true, max_acceleration: 3.0}
+  right_wrist_flex: {has_velocity_limits: true, max_velocity: 2.0, has_acceleration_limits: true, max_acceleration: 4.0}
+  right_wrist_roll: {has_velocity_limits: true, max_velocity: 2.0, has_acceleration_limits: true, max_acceleration: 4.0}
+

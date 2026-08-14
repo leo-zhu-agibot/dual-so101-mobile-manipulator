@@ -1,0 +1,11 @@
+build/
+install/
+log/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.db3
+*.mcap
+artifacts/
+models/
+

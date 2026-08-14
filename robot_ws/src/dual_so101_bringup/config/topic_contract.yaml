@@ -1,0 +1,14 @@
+schema_version: 1
+control:
+  /cmd_vel: {type: geometry_msgs/msg/Twist, min_rate_hz: 10}
+  /joint_states: {type: sensor_msgs/msg/JointState, min_rate_hz: 40}
+  /tf: {type: tf2_msgs/msg/TFMessage, min_rate_hz: 20}
+perception:
+  /head_rgbd/color/image_raw: {type: sensor_msgs/msg/Image, min_rate_hz: 15}
+  /head_rgbd/depth/image_rect_raw: {type: sensor_msgs/msg/Image, min_rate_hz: 15}
+  /scan: {type: sensor_msgs/msg/LaserScan, min_rate_hz: 8}
+  /imu/data: {type: sensor_msgs/msg/Imu, min_rate_hz: 50}
+learning:
+  /left_arm_controller/joint_trajectory: {type: trajectory_msgs/msg/JointTrajectory, min_rate_hz: 10}
+  /right_arm_controller/joint_trajectory: {type: trajectory_msgs/msg/JointTrajectory, min_rate_hz: 10}
+

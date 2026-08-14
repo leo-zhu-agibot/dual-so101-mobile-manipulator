@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="dual_so101_mobile" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="use_mock_hardware" default="true"/>
+  <xacro:include filename="so101_arm.xacro"/>
+  <xacro:include filename="sensors.xacro"/>
+  <xacro:include filename="ros2_control.xacro"/>
+
+  <material name="dark"><color rgba="0.10 0.12 0.15 1"/></material>
+  <material name="yellow"><color rgba="1.00 0.72 0.05 1"/></material>
+  <material name="sensor_blue"><color rgba="0.08 0.42 0.72 1"/></material>
+
+  <link name="base_footprint"/>
+  <link name="base_link">
+    <visual><origin xyz="0 0 0.11"/><geometry><box size="0.62 0.48 0.22"/></geometry><material name="dark"/></visual>
+    <collision><origin xyz="0 0 0.11"/><geometry><box size="0.62 0.48 0.22"/></geometry></collision>
+    <inertial><origin xyz="0 0 0.11"/><mass value="18.0"/><inertia ixx="0.42" ixy="0" ixz="0" iyy="0.58" iyz="0" izz="0.78"/></inertial>
+  </link>
+  <joint name="base_footprint_joint" type="fixed"><parent link="base_footprint"/><child link="base_link"/></joint>
+
+  <link name="left_wheel_link"><visual><geometry><cylinder radius="0.09" length="0.045"/></geometry><material name="dark"/></visual><collision><geometry><cylinder radius="0.09" length="0.045"/></geometry></collision><inertial><mass value="0.8"/><inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.003"/></inertial></link>
+  <joint name="left_wheel_joint" type="continuous"><parent link="base_link"/><child link="left_wheel_link"/><origin xyz="0 0.255 0.09" rpy="1.570796 0 0"/><axis xyz="0 0 1"/><limit effort="20" velocity="12"/></joint>
+  <link name="right_wheel_link"><visual><geometry><cylinder radius="0.09" length="0.045"/></geometry><material name="dark"/></visual><collision><geometry><cylinder radius="0.09" length="0.045"/></geometry></collision><inertial><mass value="0.8"/><inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.003"/></inertial></link>
+  <joint name="right_wheel_joint" type="continuous"><parent link="base_link"/><child link="right_wheel_link"/><origin xyz="0 -0.255 0.09" rpy="1.570796 0 0"/><axis xyz="0 0 1"/><limit effort="20" velocity="12"/></joint>
+
+  <link name="torso_link">
+    <visual><origin xyz="0 0 0.10"/><geometry><box size="0.34 0.42 0.20"/></geometry><material name="yellow"/></visual>
+    <collision><origin xyz="0 0 0.10"/><geometry><box size="0.34 0.42 0.20"/></geometry></collision>
+    <inertial><origin xyz="0 0 0.10"/><mass value="3.0"/><inertia ixx="0.06" ixy="0" ixz="0" iyy="0.04" iyz="0" izz="0.07"/></inertial>
+  </link>
+  <joint name="torso_joint" type="fixed"><parent link="base_link"/><child link="torso_link"/><origin xyz="0.06 0 0.22"/></joint>
+
+  <xacro:so101_arm prefix="left_" parent="torso_link" xyz="0.02 0.15 0.20" rpy="0 0 0"/>
+  <xacro:so101_arm prefix="right_" parent="torso_link" xyz="0.02 -0.15 0.20" rpy="0 0 0"/>
+  <xacro:sensor_suite parent="base_link"/>
+  <xacro:dual_so101_control use_mock_hardware="$(arg use_mock_hardware)"/>
+</robot>
+
