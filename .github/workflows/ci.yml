@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  model-data-contracts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Expand robot model
+        run: xacro robot_ws/src/dual_so101_description/urdf/dual_so101_mobile.urdf.xacro use_mock_hardware:=true -o /tmp/dual_so101_mobile.urdf
+      - name: Test
+        run: pytest
+      - name: Compile runtime scripts
+        run: python -m py_compile isaac_sim/*.py robot_ws/src/*/launch/*.py data_pipeline/src/mobile_manipulation_data/*.py
+

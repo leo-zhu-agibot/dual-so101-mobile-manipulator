@@ -1,0 +1,10 @@
+repositories:
+  external/so101-nexus:
+    type: git
+    url: https://github.com/johnsutor/so101-nexus.git
+    version: v0.5.1
+  external/so101-deploylab:
+    type: git
+    url: https://github.com/leo-zhu-agibot/so101-deploylab.git
+    version: main
+

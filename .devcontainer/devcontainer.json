@@ -1,0 +1,13 @@
+{
+  "name": "Dual SO101 Mobile Manipulator",
+  "build": {"dockerfile": "Dockerfile", "context": ".."},
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-iot.vscode-ros", "redhat.vscode-yaml"]
+    }
+  },
+  "postCreateCommand": "rosdep update && rosdep install --from-paths robot_ws/src --ignore-src -r -y && pip3 install --break-system-packages -e '.[dev]'",
+  "remoteEnv": {"ROS_DOMAIN_ID": "42", "RCUTILS_COLORIZED_OUTPUT": "1"}
+}
+
