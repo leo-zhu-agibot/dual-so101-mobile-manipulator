@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dual SO101 episode annotation",
+  "type": "object",
+  "required": ["episode_id", "task", "outcome", "start_seconds", "end_seconds"],
+  "properties": {
+    "episode_id": {"type": "string", "minLength": 1},
+    "task": {"type": "string", "minLength": 1},
+    "outcome": {"enum": ["success", "failure", "aborted"]},
+    "start_seconds": {"type": "number", "minimum": 0},
+    "end_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "failure_mode": {"type": ["string", "null"]},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
+

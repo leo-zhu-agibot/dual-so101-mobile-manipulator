@@ -1,0 +1,25 @@
+[project]
+name = "dual-so101-mobile-manipulator"
+version = "0.1.0"
+description = "Data and evaluation tooling for a dual SO-101 mobile manipulation stack"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["numpy>=1.26,<3", "PyYAML>=6,<7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "xacro>=2.1,<3"]
+
+[project.scripts]
+mobile-data = "mobile_manipulation_data.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["data_pipeline/src/mobile_manipulation_data"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
