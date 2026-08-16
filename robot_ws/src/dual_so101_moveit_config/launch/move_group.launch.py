@@ -1,13 +1,15 @@
+from launch.substitutions import LaunchConfiguration
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_move_group_launch
 
 
 def generate_launch_description():
+    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
     config = (
         MoveItConfigsBuilder("dual_so101_mobile", package_name="dual_so101_moveit_config")
         .robot_description(
             file_path="../dual_so101_description/urdf/dual_so101_mobile.urdf.xacro",
-            mappings={"use_mock_hardware": "true"},
+            mappings={"use_mock_hardware": use_mock_hardware},
         )
         .robot_description_semantic(file_path="config/dual_so101.srdf")
         .robot_description_kinematics(file_path="config/kinematics.yaml")
@@ -17,4 +19,3 @@ def generate_launch_description():
         .to_moveit_configs()
     )
     return generate_move_group_launch(config)
-
