@@ -7,6 +7,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description() -> LaunchDescription:
     use_mock = LaunchConfiguration("use_mock_hardware")
+    use_sim_time = LaunchConfiguration("use_sim_time")
     description_file = PathJoinSubstitution(
         [FindPackageShare("dual_so101_description"), "urdf", "dual_so101_mobile.urdf.xacro"]
     )
@@ -23,13 +24,13 @@ def generate_launch_description() -> LaunchDescription:
         Node(
             package="robot_state_publisher",
             executable="robot_state_publisher",
-            parameters=[robot_description, {"use_sim_time": True}],
+            parameters=[robot_description, {"use_sim_time": use_sim_time}],
             output="screen",
         ),
         Node(
             package="controller_manager",
             executable="ros2_control_node",
-            parameters=[robot_description, controller_file],
+            parameters=[robot_description, controller_file, {"use_sim_time": use_sim_time}],
             output="screen",
         ),
     ]
@@ -46,5 +47,10 @@ def generate_launch_description() -> LaunchDescription:
                 arguments=[controller, "--controller-manager", "/controller_manager"],
             )
         )
-    return LaunchDescription([DeclareLaunchArgument("use_mock_hardware", default_value="true"), *nodes])
-
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("use_mock_hardware", default_value="true"),
+            DeclareLaunchArgument("use_sim_time", default_value="false"),
+            *nodes,
+        ]
+    )
