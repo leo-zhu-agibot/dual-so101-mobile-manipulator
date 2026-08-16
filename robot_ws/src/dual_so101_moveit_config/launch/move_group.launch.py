@@ -1,3 +1,5 @@
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_move_group_launch
@@ -18,4 +20,10 @@ def generate_launch_description():
         .planning_pipelines(pipelines=["ompl"], default_planning_pipeline="ompl")
         .to_moveit_configs()
     )
-    return generate_move_group_launch(config)
+    move_group = generate_move_group_launch(config)
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument("use_mock_hardware", default_value="true"),
+            *move_group.entities,
+        ]
+    )
