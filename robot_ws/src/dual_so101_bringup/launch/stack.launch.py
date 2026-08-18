@@ -9,10 +9,13 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description() -> LaunchDescription:
     use_nav2 = LaunchConfiguration("use_nav2")
     use_moveit = LaunchConfiguration("use_moveit")
+    use_mock_hardware = LaunchConfiguration("use_mock_hardware")
+    use_sim_time = LaunchConfiguration("use_sim_time")
     control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([FindPackageShare("dual_so101_bringup"), "launch", "control.launch.py"])
-        )
+        ),
+        launch_arguments={"use_mock_hardware": use_mock_hardware}.items(),
     )
     perception = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -27,7 +30,7 @@ def generate_launch_description() -> LaunchDescription:
             "params_file": PathJoinSubstitution(
                 [FindPackageShare("dual_so101_bringup"), "config", "nav2_params.yaml"]
             ),
-            "use_sim_time": "true",
+            "use_sim_time": use_sim_time,
         }.items(),
         condition=IfCondition(use_nav2),
     )
@@ -37,16 +40,18 @@ def generate_launch_description() -> LaunchDescription:
                 [FindPackageShare("dual_so101_moveit_config"), "launch", "move_group.launch.py"]
             )
         ),
+        launch_arguments={"use_mock_hardware": use_mock_hardware}.items(),
         condition=IfCondition(use_moveit),
     )
     return LaunchDescription(
         [
             DeclareLaunchArgument("use_nav2", default_value="true"),
             DeclareLaunchArgument("use_moveit", default_value="true"),
+            DeclareLaunchArgument("use_mock_hardware", default_value="true"),
+            DeclareLaunchArgument("use_sim_time", default_value="false"),
             control,
             perception,
             nav2,
             moveit,
         ]
     )
-
