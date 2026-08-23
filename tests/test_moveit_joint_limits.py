@@ -1,29 +1,29 @@
 from pathlib import Path
-import re
+import xml.etree.ElementTree as ET
 
+import xacro
 import yaml
 
 ROOT = Path(__file__).parents[1]
-URDF = ROOT / "robot_ws/src/dual_so101_description/urdf/so101_arm.xacro"
+ROBOT = ROOT / "robot_ws/src/dual_so101_description/urdf/dual_so101_mobile.urdf.xacro"
 LIMITS = ROOT / "robot_ws/src/dual_so101_moveit_config/config/joint_limits.yaml"
 
 
+def _expanded_urdf() -> ET.Element:
+    document = xacro.process_file(
+        str(ROBOT),
+        mappings={"use_mock_hardware": "true"},
+    )
+    return ET.fromstring(document.toxml())
+
+
 def _urdf_velocity_limits() -> dict[str, float]:
-    text = URDF.read_text()
+    root = _expanded_urdf()
     return {
-        name: float(velocity)
-        for name, velocity in re.findall(
-            r'<joint name="\$\{prefix\}([^"]+)" type="revolute">.*?<limit[^>]*velocity="([0-9.]+)"',
-            text,
-            re.DOTALL,
-        )
+        joint.attrib["name"]: float(joint.find("limit").attrib["velocity"])
+        for joint in root.findall("joint")
+        if joint.find("limit") is not None and "velocity" in joint.find("limit").attrib
     }
-
-
-def _arm_joint_suffix(name: str) -> str:
-    match = re.fullmatch(r"(?:left|right)_(.+)", name)
-    assert match, f"Unexpected MoveIt arm joint name: {name!r}"
-    return match.group(1)
 
 
 def test_moveit_velocity_limits_do_not_exceed_urdf() -> None:
@@ -32,12 +32,9 @@ def test_moveit_velocity_limits_do_not_exceed_urdf() -> None:
 
     assert urdf_limits
     for joint, config in moveit_limits.items():
-        suffix = _arm_joint_suffix(joint)
-        assert suffix in urdf_limits, (
-            f"MoveIt joint {joint!r} is missing from the SO-101 model"
-        )
+        assert joint in urdf_limits, f"MoveIt joint {joint!r} is missing from the expanded URDF"
         assert "max_velocity" in config, f"MoveIt joint {joint!r} has no max_velocity"
-        assert config["max_velocity"] <= urdf_limits[suffix], (
+        assert config["max_velocity"] <= urdf_limits[joint], (
             f"MoveIt velocity for {joint} exceeds the URDF limit: "
-            f"{config['max_velocity']} > {urdf_limits[suffix]}"
+            f"{config['max_velocity']} > {urdf_limits[joint]}"
         )
