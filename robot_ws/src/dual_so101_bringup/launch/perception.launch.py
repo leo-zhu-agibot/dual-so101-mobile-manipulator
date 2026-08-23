@@ -15,7 +15,14 @@ def generate_launch_description() -> LaunchDescription:
                 executable="realsense2_camera_node",
                 namespace="head_rgbd",
                 name="camera",
-                parameters=[{"enable_depth": True, "enable_color": True, "align_depth.enable": True}],
+                parameters=[
+                    {
+                        "enable_depth": True,
+                        "enable_color": True,
+                        "align_depth.enable": True,
+                        "pointcloud.enable": True,
+                    }
+                ],
                 condition=IfCondition(enabled),
             ),
             Node(
@@ -34,4 +41,3 @@ def generate_launch_description() -> LaunchDescription:
             ),
         ]
     )
-
