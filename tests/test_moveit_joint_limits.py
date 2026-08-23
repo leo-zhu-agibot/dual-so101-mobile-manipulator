@@ -20,14 +20,23 @@ def _urdf_velocity_limits() -> dict[str, float]:
     }
 
 
+def _arm_joint_suffix(name: str) -> str:
+    match = re.fullmatch(r"(?:left|right)_(.+)", name)
+    assert match, f"Unexpected MoveIt arm joint name: {name!r}"
+    return match.group(1)
+
+
 def test_moveit_velocity_limits_do_not_exceed_urdf() -> None:
     urdf_limits = _urdf_velocity_limits()
     moveit_limits = yaml.safe_load(LIMITS.read_text())["joint_limits"]
 
     assert urdf_limits
     for joint, config in moveit_limits.items():
-        suffix = re.sub(r"^(left|right)_", "", joint)
-        assert suffix in urdf_limits, f"MoveIt joint {joint!r} is missing from the SO-101 model"
+        suffix = _arm_joint_suffix(joint)
+        assert suffix in urdf_limits, (
+            f"MoveIt joint {joint!r} is missing from the SO-101 model"
+        )
+        assert "max_velocity" in config, f"MoveIt joint {joint!r} has no max_velocity"
         assert config["max_velocity"] <= urdf_limits[suffix], (
             f"MoveIt velocity for {joint} exceeds the URDF limit: "
             f"{config['max_velocity']} > {urdf_limits[suffix]}"
