@@ -40,12 +40,11 @@ class EpisodeAnnotation:
         return cls.from_dict(json.loads(path.read_text()))
 
     def validate(self) -> None:
-        if not self.episode_id or not self.task:
+        if not self.episode_id.strip() or not self.task.strip():
             raise ValueError("episode_id and task are required")
         if self.outcome not in OUTCOMES:
             raise ValueError(f"outcome must be one of {sorted(OUTCOMES)}")
         if self.start_seconds < 0 or self.end_seconds <= self.start_seconds:
             raise ValueError("annotation interval must be positive and ordered")
-        if self.outcome == "failure" and not self.failure_mode:
-            raise ValueError("failure annotations require failure_mode")
-
+        if self.outcome in {"failure", "aborted"} and not self.failure_mode:
+            raise ValueError(f"{self.outcome} annotations require failure_mode")
