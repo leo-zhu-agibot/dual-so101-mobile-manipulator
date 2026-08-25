@@ -4,7 +4,7 @@ topics:
   - {name: /tf, type: tf2_msgs/msg/TFMessage, min_rate_hz: 20, max_gap_ms: 150}
   - {name: /head_rgbd/color/image_raw, type: sensor_msgs/msg/Image, min_rate_hz: 15, max_gap_ms: 150}
   - {name: /head_rgbd/depth/image_rect_raw, type: sensor_msgs/msg/Image, min_rate_hz: 15, max_gap_ms: 150}
+  - {name: /head_rgbd/depth/color/points, type: sensor_msgs/msg/PointCloud2, min_rate_hz: 10, max_gap_ms: 200}
   - {name: /scan, type: sensor_msgs/msg/LaserScan, min_rate_hz: 8, max_gap_ms: 250}
   - {name: /imu/data, type: sensor_msgs/msg/Imu, min_rate_hz: 50, max_gap_ms: 60}
   - {name: /cmd_vel, type: geometry_msgs/msg/Twist, min_rate_hz: 5, max_gap_ms: 500, required: false}
-
